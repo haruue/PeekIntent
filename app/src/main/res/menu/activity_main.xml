@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/item_trigger_test_notification"
+          android:title="Trigger test notification"/>
+    <item android:id="@+id/item_clear"
+          android:title="Clear"/>
+    <item android:id="@+id/grant_notification_listener_permission"
+          android:title="Grant notification listener"/>
+</menu>

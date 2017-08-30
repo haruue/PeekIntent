@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "moe.haruue.peekintent"
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        sign
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.sign
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
+        }
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
+
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "org.jetbrains.anko:anko:$anko_version"
+    implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+    implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
+    implementation "org.jetbrains.anko:anko-recyclerview-v7-coroutines:$anko_version"
+    implementation "eu.chainfire:libsuperuser:1.0.0.201704021214"
+
+    implementation project(":server")
+    implementation project(":hidden-api")
+}
+
+def ksFile = rootProject.file('signing.properties')
+def props = new Properties()
+if (ksFile.canRead()) {
+    props.load(new FileInputStream(ksFile))
+
+    if (props != null) {
+        android.signingConfigs.sign.storeFile file(props['KEYSTORE_FILE'])
+        android.signingConfigs.sign.storePassword props['KEYSTORE_PASSWORD']
+        android.signingConfigs.sign.keyAlias props['KEYSTORE_ALIAS']
+        android.signingConfigs.sign.keyPassword props['KEYSTORE_ALIAS_PASSWORD']
+    } else {
+        println 'some entries in \'signing.properties\' not found!'
+    }
+} else {
+    println '\'signing.properties\' not found!'
+}
